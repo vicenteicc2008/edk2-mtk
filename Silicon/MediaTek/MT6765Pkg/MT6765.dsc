@@ -37,8 +37,11 @@
   gArmPlatformTokenSpaceGuid.PcdClusterCount|1
 
 [LibraryClasses.common]
-  GpioLib|Silicon/MediaTek/MT6765Pkg/Library/GpioLib/GpioLib.inf
   KeypadDeviceImplLib|Silicon/MediaTek/MT6765Pkg/Library/KeypadDeviceImplLib/KeypadDeviceImplLib.inf
   PlatformPeiLib|Silicon/MediaTek/MT6765Pkg/Library/PlatformPeiLib/PlatformPeiLib.inf
   PlatformPrePiLib|Silicon/MediaTek/MT6765Pkg/Library/PlatformPrePiLib/PlatformPrePiLib.inf
   MsPlatformDevicesLib|Silicon/MediaTek/MT6765Pkg/Library/MsPlatformDevicesLib/MsPlatformDevicesLib.inf
+  MtkGpioImplLib|Silicon/MediaTek/MT6765Pkg/Library/MtkGpioImplLib/MtkGpioImplLib.inf
+
+[Components.common]
+  Silicon/MediaTek/MediaTekPkg/Drivers/MtkGpioDxe/MtkGpioDxe.inf

@@ -3,10 +3,10 @@
 #include <Library/BitmapLib.h>
 #include <Library/KeypadDeviceImplLib.h>
 #include <Library/UefiLib.h>
-#include <Library/GpioLib.h>
 #include <Library/IoLib.h>
-#include <Protocol/KeypadDevice.h>
 #include <Library/DebugLib.h>
+#include <Protocol/MtkGpio.h>
+#include <Protocol/KeypadDevice.h>
 
 typedef enum {
   KEY_DEVICE_TYPE_UNKNOWN,
@@ -20,6 +20,8 @@ typedef struct {
   UINT32   Gpio;
   BOOLEAN ActiveLow;
 } KEY_CONTEXT_PRIVATE;
+
+MTK_GPIO *MtkGpio;
 
 
 UINTN gBitmapScanCodes[BITMAP_NUM_WORDS(0x18)]    = {0};
@@ -207,6 +209,9 @@ KeypadDeviceImplConstructor(VOID)
 {
   UINTN                Index;
   KEY_CONTEXT_PRIVATE *StaticContext;
+  EFI_STATUS           Status;
+
+  Status = gBS->LocateProtocol (&gMtkGpioProtocolGuid, NULL, (VOID **)&MtkGpio);
 
   // Reset all keys
   for (Index = 0; Index < (sizeof(KeyList) / sizeof(KeyList[0])); Index++) {
@@ -237,7 +242,7 @@ EFI_STATUS KeypadDeviceImplGetKeys(
     KEYPAD_DEVICE_PROTOCOL *This, KEYPAD_RETURN_API *KeypadReturnApi,
     UINT64 Delta)
 {
-    GPIO_LEVEL GpioStatus;
+    BOOLEAN GpioStatus;
     BOOLEAN IsPressed;
     UINTN Index;
 
@@ -250,15 +255,15 @@ EFI_STATUS KeypadDeviceImplGetKeys(
 
         // get status
         if (Context->DeviceType == KEY_DEVICE_TYPE_LEGACY) {
-            GpioStatus = GpioGetIn(Context->Gpio);
+            MtkGpio->Get (Context->Gpio, &GpioStatus);
         } else {
             continue;
         }
 
         IsPressed = FALSE;
 
-        if ((GpioStatus == GPIO_LEVEL_LOW && Context->ActiveLow) ||
-        	(GpioStatus == GPIO_LEVEL_HIGH && !Context->ActiveLow)) {
+        if ((!GpioStatus && Context->ActiveLow) ||
+        	(GpioStatus  && !Context->ActiveLow)) {
         	IsPressed = TRUE;
         }
 
