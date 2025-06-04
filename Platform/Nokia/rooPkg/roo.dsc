@@ -10,9 +10,13 @@
   FLASH_DEFINITION               = rooPkg/roo.fdf
   DEVICE_DXE_FV_COMPONENTS       = rooPkg/roo.fdf.inc
 
-!include Silicon/MediaTek/MT6765Pkg/MT6765.dsc
-
 [PcdsFixedAtBuild.common]
+  # Simple Framebuffer
   gMediaTekTokenSpaceGuid.PcdMipiFrameBufferWidth|736
   gMediaTekTokenSpaceGuid.PcdMipiFrameBufferHeight|1440
   gMediaTekTokenSpaceGuid.PcdMipiFrameBufferAddress|0x7bee0000
+
+[LibraryClasses]
+  PlatformMemoryMapLib|rooPkg/Library/PlatformMemoryMapLib/PlatformMemoryMapLib.inf
+
+!include Silicon/MediaTek/MT6765Pkg/MT6765.dsc
