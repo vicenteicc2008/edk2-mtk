@@ -41,7 +41,12 @@
   PlatformPrePiLib|MT8183Pkg/Library/PlatformPrePiLib/PlatformPrePiLib.inf
   MtkGpioImplLib|MT8183Pkg/Library/MtkGpioImplLib/MtkGpioImplLib.inf
   PmicWrapperImplLib|MT8183Pkg/Library/PmicWrapperImplLib/PmicWrapperImplLib.inf
+  RealTimeClockLib|MediaTekPkg/Library/MT6358RtcLib/MT6358RtcLib.inf
 
 [Components.common]
   MediaTekPkg/Drivers/MtkGpioDxe/MtkGpioDxe.inf
   MediaTekPkg/Drivers/MT6358PmicDxe/MT6358PmicDxe.inf
+  EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf {
+    <LibraryClasses>
+	  RealTimeClockLib|MediaTekPkg/Library/MT6358RtcLib/MT6358RtcLib.inf
+  }
