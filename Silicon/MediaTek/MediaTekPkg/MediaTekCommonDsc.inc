@@ -426,6 +426,9 @@
   MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
   MediaTekPkg/Drivers/RamDiskDxe/RamDiskDxe.inf
 
+  # PMIC
+  MediaTekPkg/Drivers/PmicWrapperDxe/PmicWrapperDxe.inf
+
   # USB
   MdeModulePkg/Bus/Usb/UsbMouseAbsolutePointerDxe/UsbMouseAbsolutePointerDxe.inf
   MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf

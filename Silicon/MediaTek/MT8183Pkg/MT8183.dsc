@@ -40,6 +40,7 @@
   PlatformPeiLib|MT8183Pkg/Library/PlatformPeiLib/PlatformPeiLib.inf
   PlatformPrePiLib|MT8183Pkg/Library/PlatformPrePiLib/PlatformPrePiLib.inf
   MtkGpioImplLib|MT8183Pkg/Library/MtkGpioImplLib/MtkGpioImplLib.inf
+  PmicWrapperImplLib|MT8183Pkg/Library/PmicWrapperImplLib/PmicWrapperImplLib.inf
 
 [Components.common]
   MediaTekPkg/Drivers/MtkGpioDxe/MtkGpioDxe.inf
