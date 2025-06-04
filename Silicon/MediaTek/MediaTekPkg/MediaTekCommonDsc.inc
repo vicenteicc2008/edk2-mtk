@@ -239,8 +239,11 @@
   UefiDevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
   UefiScsiLib|MdePkg/Library/UefiScsiLib/UefiScsiLib.inf
 
-  #SerialPortLib|MediaTekPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+!if $(TARGET) == DEBUG
+  SerialPortLib|MediaTekPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+!else
   SerialPortLib|MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
+!endif
 
 [LibraryClasses.common.SEC]
   ArmGicArchLib|ArmPkg/Library/ArmGicArchSecLib/ArmGicArchSecLib.inf
