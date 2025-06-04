@@ -21,3 +21,4 @@
 
 [Protocols]
   gMtkGpioProtocolGuid
+  gMediaTekMT6358PmicProtocolGuid
