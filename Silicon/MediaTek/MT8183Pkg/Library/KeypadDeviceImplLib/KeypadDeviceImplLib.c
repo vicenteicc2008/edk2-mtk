@@ -224,7 +224,7 @@ KeypadDeviceImplConstructor(VOID)
   StaticContext              = KeypadKeyCodeToKeyContext(114);
   StaticContext->DeviceType  = KEY_DEVICE_TYPE_LEGACY;
   StaticContext->Gpio        = 93;
-  StaticContext->ActiveLow   = TRUE;
+  StaticContext->ActiveLow   = FALSE;
   StaticContext->IsValid     = TRUE;
 
   return RETURN_SUCCESS;
