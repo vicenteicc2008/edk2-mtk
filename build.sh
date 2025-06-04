@@ -5,7 +5,7 @@ set -e
 # Initialize variables
 CLEAN=false
 SETUP=false
-TARGET="DEBUG"
+TARGET="RELEASE"
 VENDOR_PKG=""
 
 usage() {
