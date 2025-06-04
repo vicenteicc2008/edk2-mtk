@@ -33,7 +33,7 @@ _StackSize0:
 	/* Reserved */
 	.long 0
 
-	.ascii "EDK2-MSM"
+	.ascii "EDK2-MTK"
 
 _StackBase:
 	/* Text Offset */
