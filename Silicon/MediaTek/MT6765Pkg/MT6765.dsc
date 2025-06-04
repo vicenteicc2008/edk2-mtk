@@ -40,7 +40,6 @@
   KeypadDeviceImplLib|MT6765Pkg/Library/KeypadDeviceImplLib/KeypadDeviceImplLib.inf
   PlatformPeiLib|MT6765Pkg/Library/PlatformPeiLib/PlatformPeiLib.inf
   PlatformPrePiLib|MT6765Pkg/Library/PlatformPrePiLib/PlatformPrePiLib.inf
-  MsPlatformDevicesLib|MT6765Pkg/Library/MsPlatformDevicesLib/MsPlatformDevicesLib.inf
   MtkGpioImplLib|MT6765Pkg/Library/MtkGpioImplLib/MtkGpioImplLib.inf
 
 [Components.common]

@@ -2,7 +2,8 @@ Build
 Conf
 *.dll
 .cache
-.vscode
+.vscode*
+.edkCode
 *.dts
 *.swp
 *.rej

@@ -22,9 +22,6 @@
 #include <Library/UefiBootManagerLib.h>
 #include <Library/UefiLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
-
-#include <Library/MsPlatformDevicesLib.h>
-
 #include <Protocol/DevicePath.h>
 #include <Protocol/EsrtManagement.h>
 #include <Protocol/GraphicsOutput.h>
@@ -659,8 +656,6 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
   //
   PlatformRegisterFvBootOption(
       &gUefiShellFileGuid, L"UEFI Shell", LOAD_OPTION_ACTIVE);
-
-  PlatformSetup();
 }
 
 /**

@@ -46,6 +46,7 @@
   PlatformPrePiLib
   PrePiHobListPointerLib
   PrePiLib
+  SerialPortLib
 
 [Guids]
   gEfiSystemNvDataFvGuid
