@@ -13,4 +13,4 @@ It can be used to boot Mainline Linux without devicetree hacks that requires Med
 - BigfootACA and his [SimpleInit](https://github.com/BigfootACA/simple-init)
 
 ## License
-All code except drivers in GPLDriver directory are licensed under BSD 2-Clause. GPL Drivers are licensed under GPLv2 license.
+All code is licensed under BSD 2-Clause.
