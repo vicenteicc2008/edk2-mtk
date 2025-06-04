@@ -11,6 +11,14 @@
   DEVICE_DXE_FV_COMPONENTS       = rooPkg/roo.fdf.inc
 
 [PcdsFixedAtBuild.common]
+  gArmTokenSpaceGuid.PcdSystemMemoryBase|0x40000000
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0xc0000000
+  gArmTokenSpaceGuid.PcdCpuVectorBaseAddress|0x40C40000
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackBase|0x40C00000
+  gEmbeddedTokenSpaceGuid.PcdPrePiStackSize|0x00040000
+  gMediaTekTokenSpaceGuid.PcdUefiMemPoolBase|0x40C50000
+  gMediaTekTokenSpaceGuid.PcdUefiMemPoolSize|0x0F3B0000
+
   # Simple Framebuffer
   gMediaTekTokenSpaceGuid.PcdMipiFrameBufferWidth|736
   gMediaTekTokenSpaceGuid.PcdMipiFrameBufferHeight|1440

@@ -23,10 +23,6 @@
 !include MediaTekPkg/MediaTekCommonDsc.inc
 
 [PcdsFixedAtBuild.common]
-  gArmTokenSpaceGuid.PcdSystemMemoryBase|0x40000000
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0xc0000000
-
-  gArmTokenSpaceGuid.PcdCpuVectorBaseAddress|0x40C40000     # CPU Vectors
   gArmTokenSpaceGuid.PcdArmArchTimerFreqInHz|13000000
   gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum|13
   gArmTokenSpaceGuid.PcdArmArchTimerIntrNum|14
@@ -35,14 +31,7 @@
   gArmTokenSpaceGuid.PcdGicDistributorBase|0x0c000000
   gArmTokenSpaceGuid.PcdGicRedistributorsBase|0x0c100000
   gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase|0x0c400000
-
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000850
-  gEmbeddedTokenSpaceGuid.PcdPrePiStackBase|0x40C00000      # UEFI Stack
-  gEmbeddedTokenSpaceGuid.PcdPrePiStackSize|0x00040000      # 256K stack
-  #gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize|44
-
-  gMediaTekTokenSpaceGuid.PcdUefiMemPoolBase|0x40C50000         # DXE Heap base address
-  gMediaTekTokenSpaceGuid.PcdUefiMemPoolSize|0x0F3B0000         # UefiMemorySize, DXE heap size
 
   gArmPlatformTokenSpaceGuid.PcdCoreCount|4
   gArmPlatformTokenSpaceGuid.PcdClusterCount|1
