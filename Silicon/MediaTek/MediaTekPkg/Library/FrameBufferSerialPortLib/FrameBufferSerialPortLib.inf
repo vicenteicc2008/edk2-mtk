@@ -19,7 +19,7 @@
 [Packages]
   MdePkg/MdePkg.dec
   ArmPkg/ArmPkg.dec
-  Silicon/MediaTek/MediaTekPkg/MediaTekPkg.dec
+  MediaTekPkg/MediaTekPkg.dec
 
 [LibraryClasses]
   ArmLib

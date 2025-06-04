@@ -11,4 +11,4 @@
 
 [Packages]
   MdePkg/MdePkg.dec
-  Silicon/MediaTek/MediaTekPkg/MediaTekPkg.dec
+  MediaTekPkg/MediaTekPkg.dec

@@ -120,10 +120,10 @@ READ_LOCK_STATUS   = TRUE
 
   INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
 
-  INF Silicon/MediaTek/MediaTekPkg/Drivers/MtkGpioDxe/MtkGpioDxe.inf
-  INF Silicon/MediaTek/MediaTekPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
-  INF Silicon/MediaTek/MediaTekPkg/Drivers/KeypadDxe/KeypadDxe.inf
-  INF Silicon/MediaTek/MediaTekPkg/Drivers/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
+  INF MediaTekPkg/Drivers/MtkGpioDxe/MtkGpioDxe.inf
+  INF MediaTekPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
+  INF MediaTekPkg/Drivers/KeypadDxe/KeypadDxe.inf
+  INF MediaTekPkg/Drivers/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
 
   #
   # USB Host Support
@@ -198,7 +198,7 @@ READ_STATUS        = TRUE
 READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
-  INF Silicon/MediaTek/MediaTekPkg/PrePi/PrePi.inf
+  INF MediaTekPkg/PrePi/PrePi.inf
 
   FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {
     SECTION GUIDED EE4E5898-3914-4259-9D6E-DC7BD79403CF PROCESSING_REQUIRED = TRUE {

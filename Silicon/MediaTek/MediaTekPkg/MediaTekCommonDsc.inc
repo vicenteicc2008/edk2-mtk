@@ -224,8 +224,8 @@
   ResetSystemLib|ArmPkg/Library/ArmSmcPsciResetSystemLib/ArmSmcPsciResetSystemLib.inf
   DtPlatformDtbLoaderLib|EmbeddedPkg/Library/DxeDtPlatformDtbLoaderLibDefault/DxeDtPlatformDtbLoaderLibDefault.inf
 
-  MemoryInitPeiLib|Silicon/MediaTek/MediaTekPkg/Library/MemoryInitPeiLib/PeiMemoryAllocationLib.inf
-  MemoryMapHelperLib|Silicon/MediaTek/MediaTekPkg/Library/MemoryMapHelperLib/MemoryMapHelperLib.inf
+  MemoryInitPeiLib|MediaTekPkg/Library/MemoryInitPeiLib/PeiMemoryAllocationLib.inf
+  MemoryMapHelperLib|MediaTekPkg/Library/MemoryMapHelperLib/MemoryMapHelperLib.inf
   
   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
   DebugAgentTimerLib|EmbeddedPkg/Library/DebugAgentTimerLibNull/DebugAgentTimerLibNull.inf
@@ -239,8 +239,8 @@
   UefiDevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
   UefiScsiLib|MdePkg/Library/UefiScsiLib/UefiScsiLib.inf
 
-  #SerialPortLib|Silicon/MediaTek/MediaTekPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
-  SerialPortLib|Silicon/MediaTek/MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
+  #SerialPortLib|MediaTekPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+  SerialPortLib|MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
 
 [LibraryClasses.common.SEC]
   ArmGicArchLib|ArmPkg/Library/ArmGicArchSecLib/ArmGicArchSecLib.inf
@@ -281,10 +281,6 @@
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
 
-!if $(SECURE_BOOT_ENABLE) == TRUE
-  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
-!endif
-
 [LibraryClasses.common.UEFI_DRIVER]
   ArmGicArchLib|ArmPkg/Library/ArmGicArchLib/ArmGicArchLib.inf
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
@@ -312,9 +308,9 @@
 
 [Components.common]
   # PrePI
-  Silicon/MediaTek/MediaTekPkg/PrePi/PrePi.inf {
+  MediaTekPkg/PrePi/PrePi.inf {
     <LibraryClasses>
-      SerialPortLib|Silicon/MediaTek/MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
+      SerialPortLib|MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
   }
 
   # DXE
@@ -338,7 +334,7 @@
     !if $(NO_EXCEPTION_DISPLAY) == TRUE
       SerialPortLib|Common/edk2/MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf
     !else
-      SerialPortLib|Silicon/MediaTek/MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
+      SerialPortLib|MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
     !endif
   }
   ArmPkg/Drivers/TimerDxe/TimerDxe.inf
@@ -347,7 +343,7 @@
   EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf {
     <LibraryClasses>
-	  RealTimeClockLib|Silicon/MediaTek/MediaTekPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.inf
+	  RealTimeClockLib|MediaTekPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.inf
   }
 
   # Runtime Services
@@ -436,11 +432,11 @@
   EmbeddedPkg/Drivers/VirtualKeyboardDxe/VirtualKeyboardDxe.inf
 
   # Simple framebuffer
-  Silicon/MediaTek/MediaTekPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
+  MediaTekPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
 
   # Keypad
-  Silicon/MediaTek/MediaTekPkg/Drivers/KeypadDxe/KeypadDxe.inf
-  Silicon/MediaTek/MediaTekPkg/Drivers/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
+  MediaTekPkg/Drivers/KeypadDxe/KeypadDxe.inf
+  MediaTekPkg/Drivers/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
 
   # ACPI
   # We use pre-built ACPI tables, so only core components are loaded

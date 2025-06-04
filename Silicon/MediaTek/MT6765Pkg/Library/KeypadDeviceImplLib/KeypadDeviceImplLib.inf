@@ -13,8 +13,8 @@
 [Packages]
   MdePkg/MdePkg.dec
   ArmPkg/ArmPkg.dec
-  Silicon/MediaTek/MT6765Pkg/MT6765.dec
-  Silicon/MediaTek/MediaTekPkg/MediaTekPkg.dec
+  MT6765Pkg/MT6765.dec
+  MediaTekPkg/MediaTekPkg.dec
 
 [LibraryClasses]
   TimerLib

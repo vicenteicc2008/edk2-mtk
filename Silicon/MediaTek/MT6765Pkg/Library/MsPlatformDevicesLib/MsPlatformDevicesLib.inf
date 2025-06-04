@@ -26,8 +26,8 @@
   ArmPkg/ArmPkg.dec
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
-  Silicon/MediaTek/MediaTekPkg/MediaTekPkg.dec
-  Silicon/MediaTek/MT6765Pkg/MT6765.dec
+  MediaTekPkg/MediaTekPkg.dec
+  MT6765Pkg/MT6765.dec
 
 [LibraryClasses]
   BaseMemoryLib
