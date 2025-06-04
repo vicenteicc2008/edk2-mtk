@@ -44,3 +44,4 @@
 
 [Components.common]
   MediaTekPkg/Drivers/MtkGpioDxe/MtkGpioDxe.inf
+  MediaTekPkg/Drivers/MT6358PmicDxe/MT6358PmicDxe.inf
