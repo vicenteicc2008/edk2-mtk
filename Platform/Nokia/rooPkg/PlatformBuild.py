@@ -3,10 +3,15 @@ import datetime
 import logging
 import os
 import uuid
+import subprocess
+import gzip
+import shutil
+import logging
 
 from io import StringIO
 from pathlib import Path
 
+from edk2toolext import edk2_logging
 from edk2toolext.environment import shell_environment
 from edk2toolext.environment.uefi_build import UefiBuilder
 from edk2toolext.invocables.edk2_platform_build import BuildSettingsManager
@@ -148,7 +153,121 @@ class PlatformBuilder (UefiBuilder, BuildSettingsManager):
     def PlatformPreBuild (self):
         return 0
 
+    def PlatformGetOutDir (self):
+        target = self.env.GetValue("TARGET")
+        toolchain = self.env.GetValue("TOOL_CHAIN_TAG")
+        output_dir = self.env.GetValue("OUTPUT_DIRECTORY")
+        return os.path.join(output_dir, f"{target}_{toolchain}")
+
+    def PlatformBuildBootShim (self):
+        edk2_logging.log_progress("Building BootShim")
+
+        fd_base = self.env.GetValue("BLD_*_FD_BASE")
+        fd_size = self.env.GetValue("BLD_*_FD_SIZE")
+
+        try:
+            subprocess.run(
+                ["make", "-C", "BootShim", f"UEFI_BASE={fd_base}", f"UEFI_SIZE={fd_size}"],
+                check=True
+            )
+        except subprocess.CalledProcessError:
+            logging.critical(f"BootShim build failed!")
+            return 1
+
+        return 0
+
+    def PlatformPostBuildBootShim (self):
+        edk2_logging.log_progress("BootShim PostBuild")
+
+        output_dir = self.PlatformGetOutDir()
+        platform = self.env.GetValue("PRODUCT_NAME")
+        fd_path = os.path.join(output_dir, "FV", f"{platform.upper()}_UEFI.fd")
+        shimmed_output = fd_path + ".shimmed"
+
+        try:
+            with open("BootShim/BootShim.bin", 'rb') as shim, \
+                open(fd_path, 'rb') as fd, \
+                open(shimmed_output, 'wb') as out_file:
+                out_file.write(shim.read())
+                out_file.write(fd.read())
+        except Exception as e:
+            logging.critical(f"Failed to create shimmed FD: {e}")
+            return 1
+
+        return 0
+
+    def PlatformCompressFd (self):
+        edk2_logging.log_progress("Compressing FD")
+
+        platform = self.env.GetValue("PRODUCT_NAME")
+        output_dir = self.PlatformGetOutDir()
+        fd_path = os.path.join(output_dir, "FV", f"{platform.upper()}_UEFI.fd.shimmed")
+        fd_gz_path = fd_path + ".gz"
+
+        try:
+            with open(fd_path, 'rb') as f_in:
+                with gzip.open(fd_gz_path, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+        except Exception as e:
+            logging.critical(f"Gzip compression failed: {e}")
+            return 1
+
+        return 0
+
+    def PlatformBuildBootImage (self):
+        edk2_logging.log_progress("Building boot.img")
+
+        platform = self.env.GetValue("PRODUCT_NAME")
+        bootimg_out = os.path.join("Build", f"boot-{platform}.img")
+
+        fd_path = os.path.join(self.PlatformGetOutDir(), "FV", f"{platform.upper()}_UEFI.fd.shimmed.gz")
+
+        platform_dir = os.path.dirname(os.path.abspath(__file__))
+        blob_dir = os.path.join(platform_dir, "Blob")
+        dtb = os.path.join(blob_dir, "mt6762-nokia-roo.dtb")
+        ramdisk = os.path.join(blob_dir, "ramdisk")
+
+        try:
+            subprocess.run(
+                ["mkbootimg",
+                "--cmdline", "bootopt=64S3,32N2,64N2",
+                "--header_version", "2",
+                "--pagesize", "2048",
+                "--base", "0x40078000",
+                "--kernel_offset", "0x8000",
+                "--second_offset", "0xe88000",
+                "--dtb_offset", "0x07808000",
+                "--tags_offset", "0x07808000",
+                "--ramdisk_offset", "0x11a88000",
+                "--kernel", fd_path,
+                "--dtb", dtb,
+                "--ramdisk", ramdisk,
+                "--output", bootimg_out],
+                check=True
+            )
+        except subprocess.CalledProcessError:
+            logging.critical(f"boot.img build failed!")
+            return 1
+
+        logging.info("=========== SUCCESS! ===========")
+        logging.info("Output boot.img written to: " + bootimg_out)
+        logging.info("================================")
+
+        return 0
+
     def PlatformPostBuild (self):
+        steps = [
+            self.PlatformBuildBootShim,
+            self.PlatformPostBuildBootShim,
+            self.PlatformCompressFd,
+            self.PlatformBuildBootImage
+        ]
+
+        for step in steps:
+            status = step()
+            if status:
+                return status
+
         return 0
 
     def FlashRomImage (self):
