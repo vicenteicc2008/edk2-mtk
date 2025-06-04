@@ -1,6 +1,7 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/DebugLib.h>
 #include <Library/MemoryMapHelperLib.h>
+#include <Library/DevicePathLib.h>
 #include <Library/PlatformMemoryMapLib.h>
 #include <Protocol/RamDisk.h>
 
