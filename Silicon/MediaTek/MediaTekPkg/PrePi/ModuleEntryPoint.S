@@ -28,9 +28,6 @@ _StackSize:
 
 
 _ModuleEntryPoint:
-  mov x10, FixedPcdGet64 (PcdDeviceTreeStore)
-  str x0, [x10] // oh my fdt
-  
   mov x0, #0
 
   /* Know about the current CPU index */

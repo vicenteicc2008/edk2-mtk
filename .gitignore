@@ -1,12 +1,6 @@
-boot-*.img
-uefi-*.img
-uefi-installer-*.zip
-uefi-*.img-dtb
-uefi-*.img.gz
-uefi-*.img.gz-dtb
-workspace
+Build
+Conf
 *.dll
-ramdisk
 .cache
 .vscode
 *.dts
@@ -14,3 +8,5 @@ ramdisk
 *.rej
 *.orig
 *.fd
+*.pyc
+*__pycache__*

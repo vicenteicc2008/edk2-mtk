@@ -15,7 +15,6 @@
 #include <Library/HobLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/PcdLib.h>
-#include <Library/FdtParserLib.h>
 #include <Library/PlatformMemoryMapLib.h>
 
 #define SIZE_KB ((UINTN)(1024))

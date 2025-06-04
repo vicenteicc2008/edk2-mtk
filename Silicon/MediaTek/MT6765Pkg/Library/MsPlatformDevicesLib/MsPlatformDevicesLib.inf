@@ -26,7 +26,6 @@
   ArmPkg/ArmPkg.dec
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
-  Platform/RenegadePkg/RenegadePkg.dec
   Silicon/MediaTek/MediaTekPkg/MediaTekPkg.dec
   Silicon/MediaTek/MT6765Pkg/MT6765.dec
 

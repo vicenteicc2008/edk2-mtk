@@ -24,13 +24,11 @@
   ArmPkg/ArmPkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
   Silicon/MediaTek/MediaTekPkg/MediaTekPkg.dec
-  SimpleInit.dec
 
 [LibraryClasses]
   DebugLib
   HobLib
   ArmMmuLib
-  SimpleInitLib
   PlatformMemoryMapLib
 
 [Guids]
@@ -42,7 +40,5 @@
 [FixedPcd]
   gArmTokenSpaceGuid.PcdSystemMemoryBase
   gArmTokenSpaceGuid.PcdSystemMemorySize
-  gSimpleInitTokenSpaceGuid.PcdDeviceTreeStore
-
 [Depex]
   TRUE
