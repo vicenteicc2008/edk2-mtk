@@ -120,10 +120,13 @@ READ_LOCK_STATUS   = TRUE
 
   INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
 
+  INF MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
+
   INF MediaTekPkg/Drivers/MtkGpioDxe/MtkGpioDxe.inf
   INF MediaTekPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
   INF MediaTekPkg/Drivers/KeypadDxe/KeypadDxe.inf
   INF MediaTekPkg/Drivers/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
+  INF MediaTekPkg/Drivers/RamDiskDxe/RamDiskDxe.inf
 
   #
   # USB Host Support

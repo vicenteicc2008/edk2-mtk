@@ -422,6 +422,10 @@
   MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
   MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
 
+  # Ramdisk
+  MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
+  MediaTekPkg/Drivers/RamDiskDxe/RamDiskDxe.inf
+
   # USB
   MdeModulePkg/Bus/Usb/UsbMouseAbsolutePointerDxe/UsbMouseAbsolutePointerDxe.inf
   MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
