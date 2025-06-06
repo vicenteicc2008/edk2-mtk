@@ -21,6 +21,7 @@
   UefiBootServicesTableLib
   DebugLib
   DevicePathLib
+  BaseMemoryLib
   IoLib
   TimerLib
   MemoryMapHelperLib

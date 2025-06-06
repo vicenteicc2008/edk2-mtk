@@ -18,6 +18,7 @@ DecompressRamdisk (
   if (*DecompressedPtr == NULL) {
     return EFI_OUT_OF_RESOURCES;
   }
+  ZeroMem (*DecompressedPtr, (DecompressedSize + SIZE_4KB - 1));
 
   Status = LzmaDecompress (
      SourcePtr,
@@ -63,7 +64,7 @@ RamDiskDxeInitialize (
 
   if (Magic == 0x8a7a6a5a) {
     VOID *DecompressedPtr;
-    UINT32 RamDiskSize = MmioRead32 (MemoryDescriptor.Address + 0x4);
+    RamDiskSize = MmioRead32 (MemoryDescriptor.Address + 0x4);
     UINT32 CompressedSize = MmioRead32 (MemoryDescriptor.Address + 0x8);
     DEBUG ((DEBUG_INFO, "RamDiskDxe: Compressed Ramdisk Detected!! \n"));
     DEBUG ((DEBUG_INFO, "RamDiskDxe: Ramdisk Size: 0x%08x \n", RamDiskSize));

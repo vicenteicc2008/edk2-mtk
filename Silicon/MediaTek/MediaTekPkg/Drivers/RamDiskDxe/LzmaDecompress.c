@@ -73,7 +73,10 @@ LzmaDecompress (
   if (Status != LZMA_STATUS_FINISHED_WITH_MARK && 
       Status != LZMA_STATUS_MAYBE_FINISHED_WITHOUT_MARK) {
     DEBUG ((DEBUG_ERROR, "LzmaDecompress: Decompression finished with warnings \n"));
+  } else {
+    DEBUG ((DEBUG_INFO, "LzmaDecompress: Decompression finished without warnings \n"));
   }
+  DEBUG ((DEBUG_INFO, "LzmaDecompress: Decompressed Size: 0x%08x \n", DecompressedSize));
 
   LzmaDec_Free(&State, &AllocFuncs);
 

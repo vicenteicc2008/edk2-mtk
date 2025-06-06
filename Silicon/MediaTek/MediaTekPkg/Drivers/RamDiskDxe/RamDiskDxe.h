@@ -6,6 +6,7 @@
 #include <Library/MemoryMapHelperLib.h>
 #include <Library/DevicePathLib.h>
 #include <Library/PlatformMemoryMapLib.h>
+#include <Library/BaseMemoryLib.h>
 #include <Library/IoLib.h>
 #include <Library/TimerLib.h>
 #include <Protocol/RamDisk.h>
