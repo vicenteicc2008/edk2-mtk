@@ -387,7 +387,7 @@
       NULL|MdeModulePkg/Library/BootMaintenanceManagerUiLib/BootMaintenanceManagerUiLib.inf
       PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
   }
-  MdeModulePkg/Logo/LogoDxe.inf
+  MediaTekPkg/Drivers/LogoDxe/LogoDxe.inf
 
   ShellPkg/Application/Shell/Shell.inf {
     <LibraryClasses>
