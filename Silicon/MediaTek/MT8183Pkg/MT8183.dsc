@@ -32,6 +32,8 @@
   gArmTokenSpaceGuid.PcdGicRedistributorsBase|0x0c100000
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000850
 
+  gMediaTekTokenSpaceGuid.PcdMipiFrameBufferLayers|3
+
   gArmPlatformTokenSpaceGuid.PcdCoreCount|8
   gArmPlatformTokenSpaceGuid.PcdClusterCount|2
 

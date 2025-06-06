@@ -383,6 +383,7 @@ SimpleFbDxeInitialize(
   UINT32 MipiFrameBufferAddr   = FixedPcdGet32(PcdMipiFrameBufferAddress);
   UINT32 MipiFrameBufferWidth  = FixedPcdGet32(PcdMipiFrameBufferWidth);
   UINT32 MipiFrameBufferHeight = FixedPcdGet32(PcdMipiFrameBufferHeight);
+  UINT32 MipiFrameBufferLayers = FixedPcdGet32(PcdMipiFrameBufferLayers);
 
   /* Sanity check */
   if (MipiFrameBufferAddr == 0 || MipiFrameBufferWidth == 0 ||
@@ -454,11 +455,9 @@ SimpleFbDxeInitialize(
   // zhuowei: clear the screen to black
   // UEFI standard requires this, since text is white - see
   // OvmfPkg/QemuVideoDxe/Gop.c
-  ZeroMem((void *)FrameBufferAddress, FrameBufferSize);
-  // hack: clear cache
-  WriteBackInvalidateDataCacheRange(
-      (void *)FrameBufferAddress, FrameBufferSize);
-  // zhuowei: end
+  for (UINT32 i = 0; i <= MipiFrameBufferLayers; i++) {
+    ZeroMem((void *)(FrameBufferAddress + (FrameBufferSize * i)), FrameBufferSize);
+  }
 
   /* Register handle */
   Status = gBS->InstallMultipleProtocolInterfaces(

@@ -30,5 +30,6 @@
   gMediaTekTokenSpaceGuid.PcdMipiFrameBufferPixelBpp|32|UINT32|0x0000a403
   gMediaTekTokenSpaceGuid.PcdMipiFrameBufferVisibleWidth|720|UINT32|0x0000a404
   gMediaTekTokenSpaceGuid.PcdMipiFrameBufferVisibleHeight|1440|UINT32|0x0000a405
+  gMediaTekTokenSpaceGuid.PcdMipiFrameBufferLayers|2|UINT32|0x0000a406
   # RTC information
   gMediaTekTokenSpaceGuid.PcdBootShimInfo1|0xb0000000|UINT64|0x00000a601
