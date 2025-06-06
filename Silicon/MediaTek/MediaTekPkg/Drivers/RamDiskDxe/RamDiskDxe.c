@@ -1,9 +1,39 @@
-#include <Library/UefiBootServicesTableLib.h>
-#include <Library/DebugLib.h>
-#include <Library/MemoryMapHelperLib.h>
-#include <Library/DevicePathLib.h>
-#include <Library/PlatformMemoryMapLib.h>
-#include <Protocol/RamDisk.h>
+#include "RamDiskDxe.h"
+#include "LzmaDecompress.h"
+
+EFI_STATUS
+DecompressRamdisk (
+  VOID    *SourcePtr,
+  VOID   **DecompressedPtr,
+  UINTN    CompressedSize,
+  UINTN    DecompressedSize
+  )
+{
+  EFI_STATUS  Status;
+
+  *DecompressedPtr = AllocateAlignedPages (
+    (DecompressedSize + SIZE_4KB - 1) / SIZE_4KB,
+    SIZE_4KB
+  );
+  if (*DecompressedPtr == NULL) {
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  Status = LzmaDecompress (
+     SourcePtr,
+    *DecompressedPtr,
+     CompressedSize,
+     DecompressedSize
+  );
+
+  if (EFI_ERROR (Status)) {
+    FreePool(*DecompressedPtr);
+    *DecompressedPtr = NULL;
+    return Status;
+  }
+
+  return EFI_SUCCESS;
+}
 
 EFI_STATUS
 EFIAPI
@@ -27,11 +57,35 @@ RamDiskDxeInitialize (
     return Status;
   };
 
-  DEBUG ((DEBUG_INFO, "RamDiskDxe: RamDiskAddress: 0x%0x\n", MemoryDescriptor.Address));
-  DEBUG ((DEBUG_INFO, "RamDiskDxe: RamDiskSize: 0x%0x\n", MemoryDescriptor.Length));
+  DEBUG ((DEBUG_INFO, "RamDiskDxe: RamDiskAddress: 0x%08x\n", MemoryDescriptor.Address));
 
-  DestinationRamdiskPtr = (void *)(UINTN)MemoryDescriptor.Address;
-  RamDiskSize = MemoryDescriptor.Length;
+  UINT32 Magic = MmioRead32 (MemoryDescriptor.Address);
+
+  if (Magic == 0x8a7a6a5a) {
+    VOID *DecompressedPtr;
+    UINT32 RamDiskSize = MmioRead32 (MemoryDescriptor.Address + 0x4);
+    UINT32 CompressedSize = MmioRead32 (MemoryDescriptor.Address + 0x8);
+    DEBUG ((DEBUG_INFO, "RamDiskDxe: Compressed Ramdisk Detected!! \n"));
+    DEBUG ((DEBUG_INFO, "RamDiskDxe: Ramdisk Size: 0x%08x \n", RamDiskSize));
+    DEBUG ((DEBUG_INFO, "RamDiskDxe: Compressed Size: 0x%08x \n", CompressedSize));
+    Status = DecompressRamdisk (
+      (void *)(UINTN)(MemoryDescriptor.Address + 0xc),
+      &DecompressedPtr,
+      CompressedSize,
+      RamDiskSize
+    );
+    if (EFI_ERROR (Status)) {
+      DEBUG((EFI_D_ERROR, "RamDiskDxe: LZMA decompression failed: %r\n", Status));
+      return Status;
+    }
+    DEBUG ((DEBUG_INFO, "RamDiskDxe: Decompression done, ptr: 0x%08x \n", DecompressedPtr));
+    DestinationRamdiskPtr = (void *)(UINTN)DecompressedPtr;
+  } else {
+    DEBUG ((DEBUG_INFO, "RamDiskDxe: Plain Ramdisk Detected\n"));
+    DEBUG ((DEBUG_INFO, "RamDiskDxe: RamDisk Size: 0x%08x\n", MemoryDescriptor.Length));
+    DestinationRamdiskPtr = (void *)(UINTN)MemoryDescriptor.Address;
+    RamDiskSize = MemoryDescriptor.Length;
+  }
 
   Status = gBS->LocateProtocol(&gEfiRamDiskProtocolGuid, NULL, (VOID **)&RamdiskProtocol);
   if (EFI_ERROR (Status)) {

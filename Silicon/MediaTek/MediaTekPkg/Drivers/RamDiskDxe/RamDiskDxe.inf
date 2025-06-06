@@ -8,6 +8,8 @@
 
 [Sources.common]
   RamDiskDxe.c
+  7zip/C/LzmaDec.c
+  LzmaDecompress.c
 
 [Packages]
   ArmPkg/ArmPkg.dec
@@ -19,7 +21,10 @@
   UefiBootServicesTableLib
   DebugLib
   DevicePathLib
+  IoLib
+  TimerLib
   MemoryMapHelperLib
+  MemoryAllocationLib
 
 [Protocols]
   gEfiRamDiskProtocolGuid
