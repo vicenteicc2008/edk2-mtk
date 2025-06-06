@@ -41,6 +41,7 @@
   PlatformPeiLib|MT6765Pkg/Library/PlatformPeiLib/PlatformPeiLib.inf
   PlatformPrePiLib|MT6765Pkg/Library/PlatformPrePiLib/PlatformPrePiLib.inf
   MtkGpioImplLib|MT6765Pkg/Library/MtkGpioImplLib/MtkGpioImplLib.inf
+  PmicWrapperImplLib|MT6765Pkg/Library/PmicWrapperImplLib/PmicWrapperImplLib.inf
 
 [Components.common]
   MediaTekPkg/Drivers/MtkGpioDxe/MtkGpioDxe.inf
