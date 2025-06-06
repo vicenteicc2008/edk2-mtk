@@ -6,11 +6,13 @@
 #include <Library/IoLib.h>
 #include <Library/DebugLib.h>
 #include <Protocol/MtkGpio.h>
+#include <Protocol/MT6357Pmic.h>
 #include <Protocol/KeypadDevice.h>
 
 typedef enum {
   KEY_DEVICE_TYPE_UNKNOWN,
-  KEY_DEVICE_TYPE_LEGACY
+  KEY_DEVICE_TYPE_LEGACY,
+  KEY_DEVICE_TYPE_PMIC
 } KEY_DEVICE_TYPE;
 
 typedef struct {
@@ -18,11 +20,12 @@ typedef struct {
   BOOLEAN         IsValid;
   KEY_DEVICE_TYPE DeviceType;
   UINT32   Gpio;
+  UINT32   Button;
   BOOLEAN ActiveLow;
 } KEY_CONTEXT_PRIVATE;
 
 MTK_GPIO *MtkGpio;
-
+MT6357_PMIC *MtkPmic;
 
 UINTN gBitmapScanCodes[BITMAP_NUM_WORDS(0x18)]    = {0};
 UINTN gBitmapUnicodeChars[BITMAP_NUM_WORDS(0x7f)] = {0};
@@ -182,8 +185,10 @@ STATIC inline VOID LibKeyUpdateKeyStatus(
 }
 
 STATIC KEY_CONTEXT_PRIVATE KeyContextVolumeDown;
+STATIC KEY_CONTEXT_PRIVATE KeyContextVolumeUp;
+STATIC KEY_CONTEXT_PRIVATE KeyContextPower;
 
-STATIC KEY_CONTEXT_PRIVATE *KeyList[] = { &KeyContextVolumeDown };
+STATIC KEY_CONTEXT_PRIVATE *KeyList[] = { &KeyContextVolumeDown, &KeyContextVolumeUp, &KeyContextPower };
 
 STATIC
 VOID KeypadInitializeKeyContextPrivate(KEY_CONTEXT_PRIVATE *Context)
@@ -199,6 +204,10 @@ KEY_CONTEXT_PRIVATE *KeypadKeyCodeToKeyContext(UINT32 KeyCode)
 {
   if (KeyCode == 114)
     return &KeyContextVolumeDown;
+  else if (KeyCode == 115)
+    return &KeyContextVolumeUp;
+  else if (KeyCode == 116)
+    return &KeyContextPower;
   else
     return NULL;
 }
@@ -210,22 +219,48 @@ KeypadDeviceImplConstructor(VOID)
   UINTN                Index;
   KEY_CONTEXT_PRIVATE *StaticContext;
   EFI_STATUS           Status;
+  BOOLEAN PmicFail = FALSE;
+  BOOLEAN GpioFail = FALSE;
 
   Status = gBS->LocateProtocol (&gMtkGpioProtocolGuid, NULL, (VOID **)&MtkGpio);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "KeypadDeviceImplLib: Failed to locate gpio protocol, Status = %r\n", Status));
+    GpioFail = TRUE;
+  }
+  Status = gBS->LocateProtocol (&gMediaTekMT6357PmicProtocolGuid, NULL, (VOID **)&MtkPmic);
+  if (EFI_ERROR(Status)) {
+    DEBUG ((DEBUG_ERROR, "KeypadDeviceImplLib: Failed to locate pmic protocol, Status = %r\n", Status));
+    PmicFail = TRUE;
+  }
 
   // Reset all keys
   for (Index = 0; Index < (sizeof(KeyList) / sizeof(KeyList[0])); Index++) {
     KeypadInitializeKeyContextPrivate(KeyList[Index]);
   }
 
-  // Configure keys
-  
-  // volume down
-  StaticContext              = KeypadKeyCodeToKeyContext(114);
-  StaticContext->DeviceType  = KEY_DEVICE_TYPE_LEGACY;
-  StaticContext->Gpio        = 93;
-  StaticContext->ActiveLow   = TRUE;
-  StaticContext->IsValid     = TRUE;
+  // GPIO Keys
+  if (!GpioFail) {
+    // Volume Down
+    StaticContext              = KeypadKeyCodeToKeyContext(114);
+    StaticContext->DeviceType  = KEY_DEVICE_TYPE_LEGACY;
+    StaticContext->Gpio        = 93;
+    StaticContext->ActiveLow   = FALSE;
+    StaticContext->IsValid     = TRUE;
+  }
+
+  // PMIC Keys
+  if (!PmicFail) {
+    // Volume up
+    StaticContext              = KeypadKeyCodeToKeyContext(115);
+    StaticContext->DeviceType  = KEY_DEVICE_TYPE_PMIC;
+    StaticContext->Button      = 0;
+    StaticContext->IsValid     = TRUE;
+    // Power
+    StaticContext              = KeypadKeyCodeToKeyContext(116);
+    StaticContext->DeviceType  = KEY_DEVICE_TYPE_PMIC;
+    StaticContext->Button      = 1;
+    StaticContext->IsValid     = TRUE;
+  }
 
   return RETURN_SUCCESS;
 }
@@ -235,6 +270,12 @@ EFI_STATUS EFIAPI KeypadDeviceImplReset(KEYPAD_DEVICE_PROTOCOL *This)
   LibKeyInitializeKeyContext(&KeyContextVolumeDown.EfiKeyContext);
   KeyContextVolumeDown.EfiKeyContext.KeyData.Key.ScanCode = SCAN_DOWN;
 
+  LibKeyInitializeKeyContext(&KeyContextVolumeUp.EfiKeyContext);
+  KeyContextVolumeUp.EfiKeyContext.KeyData.Key.ScanCode = SCAN_UP;
+
+  LibKeyInitializeKeyContext(&KeyContextPower.EfiKeyContext);
+  KeyContextPower.EfiKeyContext.KeyData.Key.UnicodeChar = CHAR_CARRIAGE_RETURN;
+
   return EFI_SUCCESS;
 }
 
@@ -242,34 +283,39 @@ EFI_STATUS KeypadDeviceImplGetKeys(
     KEYPAD_DEVICE_PROTOCOL *This, KEYPAD_RETURN_API *KeypadReturnApi,
     UINT64 Delta)
 {
-    BOOLEAN GpioStatus;
-    BOOLEAN IsPressed;
-    UINTN Index;
+  BOOLEAN GpioStatus;
+  BOOLEAN IsPressed = FALSE;
+  UINTN Index;
 
-    for (Index = 0; Index < (sizeof(KeyList) / sizeof(KeyList[0])); Index++) {
-        KEY_CONTEXT_PRIVATE *Context = KeyList[Index];
+  for (Index = 0; Index < (sizeof(KeyList) / sizeof(KeyList[0])); Index++) {
+    KEY_CONTEXT_PRIVATE *Context = KeyList[Index];
 
-        // check if this is a valid key
-        if (Context->IsValid == FALSE)
-            continue;
+    // check if this is a valid key
+    if (Context->IsValid == FALSE)
+      continue;
 
-        // get status
-        if (Context->DeviceType == KEY_DEVICE_TYPE_LEGACY) {
-            MtkGpio->Get (Context->Gpio, &GpioStatus);
-        } else {
-            continue;
-        }
-
-        IsPressed = FALSE;
-
-        if ((!GpioStatus && Context->ActiveLow) ||
-        	(GpioStatus  && !Context->ActiveLow)) {
-        	IsPressed = TRUE;
-        }
-
-        LibKeyUpdateKeyStatus(
-            &Context->EfiKeyContext, KeypadReturnApi, IsPressed, Delta);
+    // get status
+    if (Context->DeviceType == KEY_DEVICE_TYPE_LEGACY) {
+      MtkGpio->Get (Context->Gpio, &GpioStatus);
+      if ((!GpioStatus && Context->ActiveLow) ||
+          (GpioStatus   && !Context->ActiveLow)) {
+        IsPressed = TRUE;
+      }
+    } else if (Context->DeviceType == KEY_DEVICE_TYPE_PMIC) {
+      if (Context->Button == 0) {
+        MtkPmic->HomeButtonDebounce (&IsPressed);
+      } else if (Context->Button == 1) {
+        MtkPmic->PowerButtonDebounce (&IsPressed);
+      } else {
+        continue;
+      }
+    } else {
+      continue;
     }
 
-    return EFI_SUCCESS;
+    LibKeyUpdateKeyStatus(
+        &Context->EfiKeyContext, KeypadReturnApi, IsPressed, Delta);
+  }
+
+  return EFI_SUCCESS;
 }
