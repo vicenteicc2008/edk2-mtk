@@ -12,6 +12,7 @@
 [Packages]
   EmbeddedPkg/EmbeddedPkg.dec
   MdePkg/MdePkg.dec
+  MediaTekPkg/MediaTekPkg.dec
 
 [LibraryClasses]
   BaseLib
@@ -21,6 +22,10 @@
   UefiLib
   UefiBootServicesTableLib
   UefiDriverEntryPoint
+  PcdLib
+
+[FixedPcd]
+  gMediaTekTokenSpaceGuid.PcdWatchdogBaseAddress
 
 [Depex]
   TRUE
