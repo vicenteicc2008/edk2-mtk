@@ -24,10 +24,10 @@
 
 [PcdsFixedAtBuild.common]
   gArmTokenSpaceGuid.PcdArmArchTimerFreqInHz|13000000
-  gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum|13
-  gArmTokenSpaceGuid.PcdArmArchTimerIntrNum|14
-  gArmTokenSpaceGuid.PcdArmArchTimerVirtIntrNum|11
-  gArmTokenSpaceGuid.PcdArmArchTimerHypIntrNum|10
+  gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum|29
+  gArmTokenSpaceGuid.PcdArmArchTimerIntrNum|30
+  gArmTokenSpaceGuid.PcdArmArchTimerVirtIntrNum|27
+  gArmTokenSpaceGuid.PcdArmArchTimerHypIntrNum|26
   gArmTokenSpaceGuid.PcdGicDistributorBase|0x0c000000
   gArmTokenSpaceGuid.PcdGicRedistributorsBase|0x0c100000
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000850
