@@ -132,8 +132,23 @@ class PlatformBuilder (UefiBuilder, BuildSettingsManager):
         return logging.INFO
         return super().GetLoggingLevel(loggerType)
 
+    def GetLatestCommit (self):
+        try:
+            result = subprocess.run (
+                ['git', 'describe', '--tags', '--always'],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            return result.stdout.strip()
+        except:
+            return "Unknown"
+
     def SetPlatformEnv (self):
         logging.debug ("PlatformBuilder SetPlatformEnv")
+
+        git_commit = self.GetLatestCommit ()
 
         self.env.SetValue ("PRODUCT_NAME", "t1", "Platform Hardcoded")
         self.env.SetValue ("ACTIVE_PLATFORM", "T1Pkg/t1.dsc", "Platform Hardcoded")
@@ -147,6 +162,7 @@ class PlatformBuilder (UefiBuilder, BuildSettingsManager):
         self.env.SetValue ("BUILDREPORT_TYPES", "PCD DEPEX FLASH BUILD_FLAGS LIBRARY FIXED_ADDRESS HASH", "Setting build report types")
         self.env.SetValue ("BLD_*_FD_BASE", "0x50000000", "Default")
         self.env.SetValue ("BLD_*_FD_SIZE", "0x00700000", "Default")
+        self.env.SetValue ("BLD_*_FIRMWARE_VER", git_commit, "Latest commit")
 
         return 0
 
