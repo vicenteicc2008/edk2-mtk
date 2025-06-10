@@ -19,6 +19,7 @@
 [Defines]
   SOC_PLATFORM            = mt6765
   USE_PHYSICAL_TIMER      = TRUE
+  HAS_BROKEN_TIMER        = FALSE
 
 !include MediaTekPkg/MediaTekCommonDsc.inc
 

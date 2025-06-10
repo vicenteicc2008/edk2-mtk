@@ -19,6 +19,7 @@
 [Defines]
   SOC_PLATFORM            = mt6789
   USE_PHYSICAL_TIMER      = TRUE
+  HAS_BROKEN_TIMER        = TRUE
 
 !include MediaTekPkg/MediaTekCommonDsc.inc
 
@@ -33,6 +34,7 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision|0x00000850
 
   gMediaTekTokenSpaceGuid.PcdMipiFrameBufferLayers|3
+  gMediaTekTokenSpaceGuid.PcdWatchdogWorkingTimer|0
 
   gArmPlatformTokenSpaceGuid.PcdCoreCount|8
   gArmPlatformTokenSpaceGuid.PcdClusterCount|2

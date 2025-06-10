@@ -103,7 +103,11 @@
   gEfiMdePkgTokenSpaceGuid.PcdDefaultTerminalType|4
 
   # Boot Manager
+!if $(HAS_BROKEN_TIMER) == TRUE
+  gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|0
+!else
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|3
+!endif
 
   # PCI Express
   gEfiMdeModulePkgTokenSpaceGuid.PcdSrIovSupport|FALSE

@@ -26,6 +26,7 @@
 
 [FixedPcd]
   gMediaTekTokenSpaceGuid.PcdWatchdogBaseAddress
+  gMediaTekTokenSpaceGuid.PcdWatchdogWorkingTimer
 
 [Depex]
   TRUE

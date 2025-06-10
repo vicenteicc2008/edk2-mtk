@@ -19,6 +19,7 @@
 [Defines]
   SOC_PLATFORM            = mt8183
   USE_PHYSICAL_TIMER      = TRUE
+  HAS_BROKEN_TIMER        = FALSE
 
 !include MediaTekPkg/MediaTekCommonDsc.inc
 

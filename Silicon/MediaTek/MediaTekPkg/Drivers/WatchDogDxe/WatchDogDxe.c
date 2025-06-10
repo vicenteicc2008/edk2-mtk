@@ -11,11 +11,26 @@
 
 #define WDT_LENGTH_KEY (0x8)
 #define WDT_RST_KEY (0x1971)
+#define WDT_MODE_KEY (0x22000000)
 
 UINT32 WatchdogBase;
+UINT32 WatchdogModeBackup;
+BOOLEAN WorkingTimer;
 
 EFI_EVENT WatchdogTimerEvent;
 EFI_EVENT mEfiExitBootServicesEvent;
+
+VOID
+WatchdogDisable ()
+{
+  MmioWrite32 (WatchdogBase, WDT_MODE_KEY);
+}
+
+VOID
+WatchdogEnable ()
+{
+  MmioWrite32 (WatchdogBase, WatchdogModeBackup | WDT_MODE_KEY);
+}
 
 VOID
 WatchdogPing ()
@@ -40,7 +55,11 @@ PingWatchdogEvent (
   IN VOID *Context
   )
 {
-  WatchdogPing ();
+  if (WorkingTimer) {
+    WatchdogPing ();
+  } else {
+    WatchdogEnable ();
+  }
 }
 
 EFI_STATUS
@@ -53,33 +72,39 @@ WatchdogDxeEntry (
   EFI_STATUS Status;
 
   WatchdogBase = FixedPcdGet32(PcdWatchdogBaseAddress);
+  WorkingTimer = FixedPcdGet32(PcdWatchdogWorkingTimer);
+  WatchdogModeBackup = MmioRead32 (WatchdogBase);
 
   // Set watchdog timeout to 30s
   SetTimeout (30*1000*1000);
 
-  Status = gBS->CreateEvent (
-    EVT_TIMER | EVT_NOTIFY_SIGNAL,
-    TPL_CALLBACK,
-    PingWatchdogEvent,
-    NULL,
-    &WatchdogTimerEvent
-  );
+  if (WorkingTimer) {
+    Status = gBS->CreateEvent (
+      EVT_TIMER | EVT_NOTIFY_SIGNAL,
+      TPL_CALLBACK,
+      PingWatchdogEvent,
+      NULL,
+      &WatchdogTimerEvent
+    );
 
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "WatchDogDxe: Failed to create timer event: %r\n", Status));
-    return Status;
-  }
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "WatchDogDxe: Failed to create timer event: %r\n", Status));
+      return Status;
+    }
 
-  // Ping watchdog every 5s
-  Status = gBS->SetTimer (
-    WatchdogTimerEvent,
-    TimerPeriodic,
-    5*1000*1000*10
-  );
+    // Ping watchdog every 5s
+    Status = gBS->SetTimer (
+      WatchdogTimerEvent,
+      TimerPeriodic,
+      5*1000*1000*10
+    );
 
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "WatchDogDxe: Failed to set periodic timer: %r\n", Status));
-    return Status;
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "WatchDogDxe: Failed to set periodic timer: %r\n", Status));
+      return Status;
+    }
+  } else {
+    WatchdogDisable ();
   }
 
   // Ping watchdog before os boot
