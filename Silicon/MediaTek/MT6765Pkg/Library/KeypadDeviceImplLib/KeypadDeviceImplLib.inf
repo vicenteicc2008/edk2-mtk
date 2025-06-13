@@ -13,9 +13,12 @@
 [Packages]
   MdePkg/MdePkg.dec
   ArmPkg/ArmPkg.dec
-  Silicon/MediaTek/MT6765Pkg/MT6765.dec
+  MT6765Pkg/MT6765.dec
+  MediaTekPkg/MediaTekPkg.dec
 
 [LibraryClasses]
-  GpioLib
   TimerLib
-  
+
+[Protocols]
+  gMtkGpioProtocolGuid
+  gMediaTekMT6357PmicProtocolGuid

@@ -8,6 +8,7 @@
 #include <Library/PrePiHobListPointerLib.h>
 #include <Library/CacheMaintenanceLib.h>
 #include <Library/PlatformPrePiLib.h>
+#include <Library/SerialPortLib.h>
 
 #include <Ppi/GuidedSectionExtraction.h>
 
@@ -121,14 +122,23 @@ PrePiMain(
   ASSERT_EFI_ERROR (Status);
 }
 
+VOID SerialPortInit (VOID)
+{
+  SerialPortInitialize ();
+
+  DEBUG ((EFI_D_INFO, "\nEDK II For MediaTek Project (AArch64)\n"));
+  DEBUG (
+      (EFI_D_INFO, "Firmware version %s built %a %a\n\n",
+       (CHAR16 *)PcdGetPtr(PcdFirmwareVersionString), __TIME__, __DATE__));
+}
+
 VOID
 CEntryPoint(
   IN VOID *StackBase,
   IN UINTN StackSize
   )
 {
-  // Disable watchdog (FIXME)
-  DisableWDT();
+  SerialPortInit ();
   
   // Do platform specific initialization here
   PlatformInitialize();

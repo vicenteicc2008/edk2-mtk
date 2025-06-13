@@ -22,7 +22,7 @@
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
-  Silicon/MediaTek/MediaTekPkg/MediaTekPkg.dec
+  MediaTekPkg/MediaTekPkg.dec
 
 [LibraryClasses]
   BaseLib

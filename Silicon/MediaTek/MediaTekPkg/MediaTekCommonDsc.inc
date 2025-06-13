@@ -22,14 +22,7 @@
   # WARNING: GCC compilation doesn't work sometimes
   *_GCC5_AARCH64_CC_FLAGS = -O1
   *_*_*_CC_FLAGS = -DDEFAULT_DARK -mtune=cortex-a53 -mcpu=cortex-a53 -fverbose-asm -funsigned-char -ffunction-sections -fdata-sections -fno-builtin -fno-common -Wno-unused-variable -fshort-wchar -fno-strict-aliasing -mlittle-endian -fno-short-enums -fno-asynchronous-unwind-tables -mcmodel=small -ffixed-x18 -mstrict-align -fstack-protector -Wno-unaligned-access -Wno-misleading-indentation
-
-  !if $(ENABLE_LINUX_UTILS) == 1
-    GCC:*_*_AARCH64_CC_FLAGS = -DENABLE_LINUX_UTILS=1
-  !endif
   
-  !if $(AB_SLOTS_SUPPORT) == TRUE
-    GCC:*_*_AARCH64_CC_FLAGS = -DAB_SLOTS_SUPPORT=1
-  !endif
 
 [BuildOptions.common.EDKII.DXE_CORE,BuildOptions.common.EDKII.DXE_DRIVER,BuildOptions.common.EDKII.UEFI_DRIVER,BuildOptions.common.EDKII.UEFI_APPLICATION]
   *_*_*_DLINK_FLAGS = -z common-page-size=0x1000
@@ -61,7 +54,7 @@
   gArmPlatformTokenSpaceGuid.PcdCPUCoresStackBase|0x9FF90000
   gArmPlatformTokenSpaceGuid.PcdCPUCorePrimaryStackSize|0x20000
 
-  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"Renegade Project"
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVendor|L"EDK II for MediaTek Project"
   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString|L"$(FIRMWARE_VER)"
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId|"MTK  "
   gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId|0x324B44454D4F4351
@@ -98,15 +91,9 @@
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiACPIReclaimMemory|0
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiACPIMemoryNVS|0
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiReservedMemoryType|0
-!if $(SECURE_BOOT_ENABLE) == TRUE
-  gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiRuntimeServicesData|600
-  gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiRuntimeServicesCode|400
-  gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiBootServicesCode|1500
-!else
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiRuntimeServicesData|300
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiRuntimeServicesCode|150
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiBootServicesCode|1000
-!endif
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiBootServicesData|800
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiLoaderCode|10
   gEmbeddedTokenSpaceGuid.PcdMemoryTypeEfiLoaderData|0
@@ -116,7 +103,11 @@
   gEfiMdePkgTokenSpaceGuid.PcdDefaultTerminalType|4
 
   # Boot Manager
+!if $(HAS_BROKEN_TIMER) == TRUE
+  gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|0
+!else
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|3
+!endif
 
   # PCI Express
   gEfiMdeModulePkgTokenSpaceGuid.PcdSrIovSupport|FALSE
@@ -124,11 +115,6 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdMrIovSupport|FALSE
   gArmTokenSpaceGuid.PcdPciBusMin|0x0
   gArmTokenSpaceGuid.PcdPciBusMax|0xff
-
-!if $(SECURE_BOOT_ENABLE) == TRUE
-  gEfiMdeModulePkgTokenSpaceGuid.PcdMaxAuthVariableSize|0x2800
-  gEfiSecurityPkgTokenSpaceGuid.PcdUserPhysicalPresence|TRUE
-!endif
 
   # a PCD that controls the enumeration and connection of ConIn's. When true, ConIn is only connected once a console input is requests
   gEfiMdeModulePkgTokenSpaceGuid.PcdConInConnectOnDemand|FALSE
@@ -139,7 +125,6 @@
 
   # GUID of the UI app
   gEfiMdeModulePkgTokenSpaceGuid.PcdBootManagerMenuFile|{ 0x21, 0xaa, 0x2c, 0x46, 0x14, 0x76, 0x03, 0x45, 0x83, 0x6e, 0x8a, 0xb6, 0xf4, 0x66, 0x23, 0x31 }
-  gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|0
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxVariableSize|0x2000
 
@@ -155,7 +140,6 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdConOutColumn|0
   
 !include MdePkg/MdeLibs.dsc.inc
-!include SimpleInit.inc
 
 [LibraryClasses.common]
   ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf
@@ -207,7 +191,7 @@
   PeCoffLib|MdePkg/Library/BasePeCoffLib/BasePeCoffLib.inf
   PeCoffGetEntryPointLib|MdePkg/Library/BasePeCoffGetEntryPointLib/BasePeCoffGetEntryPointLib.inf
   PerformanceLib|MdePkg/Library/BasePerformanceLibNull/BasePerformanceLibNull.inf
-  PlatformBootManagerLib|Platform/RenegadePkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf # Custom
+  PlatformBootManagerLib|Silicon/MediaTek/MediaTekPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf # Custom
   PrePiLib|EmbeddedPkg/Library/PrePiLib/PrePiLib.inf
   PrePiHobListPointerLib|ArmPlatformPkg/Library/PrePiHobListPointerLib/PrePiHobListPointerLib.inf
   PrePiMemoryAllocationLib|EmbeddedPkg/Library/PrePiMemoryAllocationLib/PrePiMemoryAllocationLib.inf
@@ -232,18 +216,7 @@
   VariablePolicyHelperLib|MdeModulePkg/Library/VariablePolicyHelperLib/VariablePolicyHelperLib.inf
   TimeBaseLib|EmbeddedPkg/Library/TimeBaseLib/TimeBaseLib.inf
 
-!if $(SECURE_BOOT_ENABLE) == TRUE
-  RngLib|MdePkg/Library/BaseRngLibTimerLib/BaseRngLibTimerLib.inf
-  IntrinsicLib|CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
-  TlsLib|CryptoPkg/Library/TlsLib/TlsLib.inf
-  OpensslLib|CryptoPkg/Library/OpensslLib/OpensslLibCrypto.inf
-  PlatformSecureLib|SecurityPkg/Library/PlatformSecureLibNull/PlatformSecureLibNull.inf
-  AuthVariableLib|SecurityPkg/Library/AuthVariableLib/AuthVariableLib.inf
-  SecureBootVariableLib|SecurityPkg/Library/SecureBootVariableLib/SecureBootVariableLib.inf
-  SecureBootVariableProvisionLib|SecurityPkg/Library/SecureBootVariableProvisionLib/SecureBootVariableProvisionLib.inf
-!else
   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
-!endif
   VariableFlashInfoLib|MdeModulePkg/Library/BaseVariableFlashInfoLib/BaseVariableFlashInfoLib.inf
 
   # System Reset
@@ -254,8 +227,8 @@
   ResetSystemLib|ArmPkg/Library/ArmSmcPsciResetSystemLib/ArmSmcPsciResetSystemLib.inf
   DtPlatformDtbLoaderLib|EmbeddedPkg/Library/DxeDtPlatformDtbLoaderLibDefault/DxeDtPlatformDtbLoaderLibDefault.inf
 
-  MemoryInitPeiLib|Silicon/MediaTek/MediaTekPkg/Library/MemoryInitPeiLib/PeiMemoryAllocationLib.inf
-  MemoryMapHelperLib|Silicon/MediaTek/MediaTekPkg/Library/MemoryMapHelperLib/MemoryMapHelperLib.inf
+  MemoryInitPeiLib|MediaTekPkg/Library/MemoryInitPeiLib/PeiMemoryAllocationLib.inf
+  MemoryMapHelperLib|MediaTekPkg/Library/MemoryMapHelperLib/MemoryMapHelperLib.inf
   
   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
   DebugAgentTimerLib|EmbeddedPkg/Library/DebugAgentTimerLibNull/DebugAgentTimerLibNull.inf
@@ -269,11 +242,10 @@
   UefiDevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
   UefiScsiLib|MdePkg/Library/UefiScsiLib/UefiScsiLib.inf
 
-  #SerialPortLib|Silicon/MediaTek/MediaTekPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
-  SerialPortLib|Silicon/MediaTek/MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
-
-!if $(AB_SLOTS_SUPPORT) == TRUE
-  BootSlotLib|GPLDrivers/Library/BootSlotLib/BootSlotLib.inf
+!if $(TARGET) == DEBUG
+  SerialPortLib|MediaTekPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+!else
+  SerialPortLib|MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
 !endif
 
 [LibraryClasses.common.SEC]
@@ -304,10 +276,6 @@
   UefiHiiServicesLib|MdeModulePkg/Library/UefiHiiServicesLib/UefiHiiServicesLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
 
-!if $(SECURE_BOOT_ENABLE) == TRUE
-  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
-!endif
-
 [LibraryClasses.common.UEFI_APPLICATION]
   ArmGicArchLib|ArmPkg/Library/ArmGicArchLib/ArmGicArchLib.inf
   UefiDecompressLib|MdePkg/Library/BaseUefiDecompressLib/BaseUefiTianoCustomDecompressLib.inf
@@ -319,10 +287,6 @@
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
 
-!if $(SECURE_BOOT_ENABLE) == TRUE
-  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
-!endif
-
 [LibraryClasses.common.UEFI_DRIVER]
   ArmGicArchLib|ArmPkg/Library/ArmGicArchLib/ArmGicArchLib.inf
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
@@ -332,10 +296,6 @@
   MemoryAllocationLib|MdePkg/Library/UefiMemoryAllocationLib/UefiMemoryAllocationLib.inf
   UefiScsiLib|MdePkg/Library/UefiScsiLib/UefiScsiLib.inf
   ExtractGuidedSectionLib|MdePkg/Library/DxeExtractGuidedSectionLib/DxeExtractGuidedSectionLib.inf
-
-!if $(SECURE_BOOT_ENABLE) == TRUE
-  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
-!endif
 
 [LibraryClasses.common.DXE_RUNTIME_DRIVER]
   ArmGicArchLib|ArmPkg/Library/ArmGicArchLib/ArmGicArchLib.inf
@@ -352,15 +312,11 @@
 
   VariablePolicyLib|MdeModulePkg/Library/VariablePolicyLib/VariablePolicyLibRuntimeDxe.inf
 
-!if $(SECURE_BOOT_ENABLE) == TRUE
-  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/RuntimeCryptLib.inf
-!endif
-
 [Components.common]
   # PrePI
-  Silicon/MediaTek/MediaTekPkg/PrePi/PrePi.inf {
+  MediaTekPkg/PrePi/PrePi.inf {
     <LibraryClasses>
-      SerialPortLib|Silicon/MediaTek/MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
+      SerialPortLib|MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
   }
 
   # DXE
@@ -384,7 +340,7 @@
     !if $(NO_EXCEPTION_DISPLAY) == TRUE
       SerialPortLib|Common/edk2/MdePkg/Library/BaseSerialPortLibNull/BaseSerialPortLibNull.inf
     !else
-      SerialPortLib|Silicon/MediaTek/MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
+      SerialPortLib|MediaTekPkg/Library/UartSerialPortLib/UartSerialPortLib.inf
     !endif
   }
   ArmPkg/Drivers/TimerDxe/TimerDxe.inf
@@ -393,7 +349,7 @@
   EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf {
     <LibraryClasses>
-	  RealTimeClockLib|Silicon/MediaTek/MediaTekPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.inf
+	  RealTimeClockLib|MediaTekPkg/Library/VirtualRealTimeClockLib/VirtualRealTimeClockLib.inf
   }
 
   # Runtime Services
@@ -407,16 +363,7 @@
   # Security Stub
   MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf {
     <LibraryClasses>
-!if $(SECURE_BOOT_ENABLE) == TRUE
-      NULL|SecurityPkg/Library/DxeImageVerificationLib/DxeImageVerificationLib.inf
-!endif
   }
-
-!if $(SECURE_BOOT_ENABLE) == TRUE
-  SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
-  SecurityPkg/EnrollFromDefaultKeysApp/EnrollFromDefaultKeysApp.inf
-  SecurityPkg/VariableAuthenticated/SecureBootDefaultKeysDxe/SecureBootDefaultKeysDxe.inf
-!endif
 
   # BDS
   MdeModulePkg/Universal/PrintDxe/PrintDxe.inf
@@ -433,7 +380,6 @@
       PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
   }
   MdeModulePkg/Universal/DisplayEngineDxe/DisplayEngineDxe.inf
-  MdeModulePkg/Universal/SmbiosDxe/SmbiosDxe.inf
   MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
   MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
   MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
@@ -444,7 +390,7 @@
       NULL|MdeModulePkg/Library/BootMaintenanceManagerUiLib/BootMaintenanceManagerUiLib.inf
       PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
   }
-  Platform/RenegadePkg/Drivers/LogoDxe/LogoDxe.inf
+  MediaTekPkg/Drivers/LogoDxe/LogoDxe.inf
 
   ShellPkg/Application/Shell/Shell.inf {
     <LibraryClasses>
@@ -479,6 +425,16 @@
   MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
   MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
 
+  # Ramdisk
+  MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
+  MediaTekPkg/Drivers/RamDiskDxe/RamDiskDxe.inf
+
+  # PMIC
+  MediaTekPkg/Drivers/PmicWrapperDxe/PmicWrapperDxe.inf
+
+  # Watchdog Kicker
+  MediaTekPkg/Drivers/WatchDogDxe/WatchDogDxe.inf
+
   # USB
   MdeModulePkg/Bus/Usb/UsbMouseAbsolutePointerDxe/UsbMouseAbsolutePointerDxe.inf
   MdeModulePkg/Bus/Usb/UsbBusDxe/UsbBusDxe.inf
@@ -491,15 +447,12 @@
 
   EmbeddedPkg/Drivers/VirtualKeyboardDxe/VirtualKeyboardDxe.inf
 
-  # SMBIOS
-  Platform/RenegadePkg/Drivers/PlatformSmbiosDxe/PlatformSmbiosDxe.inf
-
   # Simple framebuffer
-  Silicon/MediaTek/MediaTekPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
+  MediaTekPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
 
   # Keypad
-  Silicon/MediaTek/MediaTekPkg/Drivers/KeypadDxe/KeypadDxe.inf
-  Silicon/MediaTek/MediaTekPkg/Drivers/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
+  MediaTekPkg/Drivers/KeypadDxe/KeypadDxe.inf
+  MediaTekPkg/Drivers/GenericKeypadDeviceDxe/GenericKeypadDeviceDxe.inf
 
   # ACPI
   # We use pre-built ACPI tables, so only core components are loaded
@@ -516,13 +469,3 @@
   MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
 
   MdeModulePkg/Universal/EsrtFmpDxe/EsrtFmpDxe.inf
-
-  # Helper drivers
-  Platform/RenegadePkg/Drivers/SetCPUFreqDxe/SetCPUFreqDxe.inf
-  Platform/RenegadePkg/Drivers/KernelErrataPatcher/KernelErrataPatcher.inf
-
-  # SwitchSlotsApp-BootSlotDxe
-!if $(AB_SLOTS_SUPPORT) == TRUE
-  GPLDrivers/Drivers/BootSlotDxe/BootSlotDxe.inf
-  GPLDrivers/Application/SwitchSlotsApp/SwitchSlotsApp.inf
-!endif

@@ -35,7 +35,7 @@
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
-  Silicon/MediaTek/MediaTekPkg/MediaTekPkg.dec
+  MediaTekPkg/MediaTekPkg.dec
 
 [LibraryClasses]
   MemoryAllocationLib

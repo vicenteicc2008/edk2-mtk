@@ -30,7 +30,7 @@
   ArmPkg/ArmPkg.dec
   MdePkg/MdePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
-  Silicon/MediaTek/MediaTekPkg/MediaTekPkg.dec
+  MediaTekPkg/MediaTekPkg.dec
 
 [LibraryClasses]
   IoLib

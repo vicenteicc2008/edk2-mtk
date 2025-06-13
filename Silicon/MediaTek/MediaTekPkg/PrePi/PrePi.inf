@@ -29,8 +29,7 @@
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
-  Silicon/MediaTek/MediaTekPkg/MediaTekPkg.dec
-  SimpleInit.dec
+  MediaTekPkg/MediaTekPkg.dec
 
 [LibraryClasses]
   ArmLib
@@ -47,7 +46,7 @@
   PlatformPrePiLib
   PrePiHobListPointerLib
   PrePiLib
-  UfdtLib
+  SerialPortLib
 
 [Guids]
   gEfiSystemNvDataFvGuid
@@ -71,4 +70,3 @@
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize
   gMediaTekTokenSpaceGuid.PcdUefiMemPoolBase
   gMediaTekTokenSpaceGuid.PcdUefiMemPoolSize
-  gSimpleInitTokenSpaceGuid.PcdDeviceTreeStore

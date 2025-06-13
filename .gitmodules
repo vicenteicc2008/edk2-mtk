@@ -6,6 +6,3 @@
 	path = Common/edk2-platforms
 	url = https://github.com/tianocore/edk2-platforms.git
 	branch = d8232e8816fafb875a3656dda788b6681bc25149
-[submodule "Platform/RenegadePkg/Library/SimpleInit"]
-	path = GPLDrivers/Library/SimpleInit
-	url = https://github.com/BigfootACA/simple-init.git
